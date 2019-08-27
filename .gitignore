@@ -15,3 +15,22 @@ Run_Model.sh
 FireRisk_Dashboard/key.json
 FireRisk_Dashboard/.key.json
 Test.ipynb
+datasets/Block Areas/Allegheny_County_Block_Areas.cpg
+datasets/Block Areas/Allegheny_County_Block_Areas.dbf
+datasets/Block Areas/Allegheny_County_Block_Areas.prj
+datasets/Block Areas/Allegheny_County_Block_Areas.shp
+datasets/Block Areas/Allegheny_County_Block_Areas.shx
+datasets/Block Areas/Allegheny_County_Block_Areas.zip
+datasets/Block Areas/FireJoinKey.cpg
+datasets/Block Areas/FireJoinKey.dbf
+datasets/Block Areas/FireJoinKey.prj
+datasets/Block Areas/FireJoinKey.qpj
+datasets/Block Areas/FireJoinKey.shp
+datasets/Block Areas/FireJoinKey.shx
+datasets/Block Areas/option3.cpg
+datasets/Block Areas/option3.dbf
+datasets/Block Areas/option3.prj
+datasets/Block Areas/option3.qpj
+datasets/Block Areas/option3.shp
+datasets/Block Areas/option3.shx
+notesforself2.txt
