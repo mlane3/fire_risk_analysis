@@ -587,11 +587,11 @@ print('f1 score = ', f1)
 
 
 ### Write model performance to log file:
-
-with open('{0}ModelPerformance_{1}.txt'.format(log_path, datetime.datetime.now()), 'a') as log_file:
+#datetime.datetime.now()
+with open('{0}ModelPerformance_{1}.txt'.format(log_path,1), 'a') as log_file:
     log_file.write("Confusion Matrix: \n \n")
     for item in cm:
-        print(log_file, item)
+        print(log_file,item)
     log_file.write("Model performance metrics: \n \n")
     log_file.write(acc)
     log_file.write(kapp)
@@ -623,7 +623,7 @@ Results.to_csv(os.path.join(dataset_path, "Results.csv"))
 
 
 # Writing results to a log file for post-hoc model performance analysis
-Results.to_csv('{0}Results_{1}.csv'.format(log_path, datetime.datetime.now()))
+Results.to_csv('{0}Results_{1}.csv'.format(log_path,1))
 
 
 # #Plotting the ROC curve
@@ -641,7 +641,7 @@ plt.legend(loc="lower right")
 plt.show()
 
 
-roc_png = "{0}ROC_{1}.png".format(png_path, datetime.datetime.now())
+roc_png = "{0}ROC_{1}.png".format(png_path,1)
 plt.savefig(roc_png, dpi=150)
 plt.clf()   # Clear figure
 
@@ -673,11 +673,11 @@ plt.ylabel('Feature Importance Scores')
 plt.title('Feature Importance')
 
 
-features_png = "{0}FeatureImportancePlot_{1}.png".format(png_path, datetime.datetime.now())
+features_png = "{0}FeatureImportancePlot_{1}.png".format(png_path,1)
 plt.savefig(features_png, dpi=150, bbox_inches="tight")
 plt.clf()
 
-important_features[0:50].to_csv('{0}FeatureImportanceList_{1}.csv'.format(log_path, datetime.datetime.now()))
+important_features[0:50].to_csv('{0}FeatureImportanceList_{1}.csv'.format(log_path,1))
 
 
 

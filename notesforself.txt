@@ -1,0 +1,26 @@
+(only about 6% of the properties in our total dataset had fires in Firebird)
+Statistics
+6428 Fires
+46906 non-residental properities
+Reduced to 17,928 Non-Residental properities
+
+
+# fire_new.info() fire_new.isnull().sum()
+# add "STREET_NAME" "PARID" 
+
+
+Figuring out the Geospatial file Notes:
+Data Sources:
+
+
+
+(Ground Truth) <- Building Address  <- Building's Street Block <- 
+
+Quote from 
+"In Table 2, we display the results of  this simulated residential model, finding that approximately 68% of the high risk census blocks
+had building fire incidents. However, as nearly 83% of census blocks had a prediction probability
+greater than 0.5, this suggests a more nuanced approach to risk score discretization may be required.
+Additionally, because census blocks may contain hundreds of residential properties, there may
+be multiple fire incidents, suggesting that a binary classification approach may not be the most
+appropriate or effective. For our 6 performance metrics across each simulated model iteration, we
+show the raw values (Figure 12), the mean values (Figure 13), and the standard deviation (Figure 14)."

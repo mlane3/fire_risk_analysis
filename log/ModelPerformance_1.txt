@@ -1,0 +1,29 @@
+Confusion Matrix: 
+ 
+Model performance metrics: 
+ 
+Accuracy = 1.0 
+ 
+kappa score = 1.0 
+ 
+AUC Score = 1.0 
+ 
+recall = 1.0 
+ 
+precision = 1.0 
+ 
+f1 score = 1.0Confusion Matrix: 
+ 
+Model performance metrics: 
+ 
+Accuracy = 1.0 
+ 
+kappa score = 1.0 
+ 
+AUC Score = 1.0 
+ 
+recall = 1.0 
+ 
+precision = 1.0 
+ 
+f1 score = 1.0
