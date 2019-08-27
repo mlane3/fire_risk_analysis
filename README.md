@@ -1,4 +1,6 @@
-# Fire Risk Analysis
+# Fire Risk Analysis Template
+Edit:  This is an open-source modified fork of the original Pittsburg Fire Risk model.  The Pittsburg model was by Michael Madio and his team.   This fork is to serve as a template for the Atlytics event to help Altanta metrocounties predict fire risk for *new types of fires*.  However, pittsburg's Fire Risk model was designed to predict commerical fire risk, and Atlytics data is complete different for residental fires.  Still, the fire risk model was being modified for predicting residental fire risk as of Feb 2019 (for more details see Singh Walia, Bhavkaran & Madaio, et al. (2018). A Dynamic Pipeline for Spatio-Temporal Fire Risk Prediction. 764-773. 10.1145/3219819.3219913).  Furthermore its based on the original firebird that was also a commerical fire risk model. As consequence, it should only serve as a starting point for predicting any other noncommerical type of fire risk. Please give citation and credit to the original creators not this fork.
+
 This is a set of scripts for a machine learning pipeline to predict structure fire risk and inform fire inspection prioritization decisions. A full technical report can be found [here](http://michaelmadaio.com/Metro21_FireRisk_FinalReport.pdf). 
 
 ## Run_Model.sh
