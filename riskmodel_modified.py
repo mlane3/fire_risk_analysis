@@ -309,7 +309,7 @@ for col,val in fire_new['incident_type'].value_counts().iteritems():
 fire_new = fire_new.drop_duplicates()
 del fireDate, fireTime, descript, fire_pre14, remove_descript, replace
 fire_new.to_csv("datasets/fire_totableauprep.csv")
-
+fire_new2 = fire_new
 # ============#2 DONE, ^this is the cleaned data frame of fire incident ============
 
 
@@ -318,11 +318,83 @@ fire_new.to_csv("datasets/fire_totableauprep.csv")
 #pcafire = pd.merge(plipca1, fire_new, how = 'left', left_on =['PROPERTYADDRESS','PROPERTYHOUSENUM'],
 #        right_on = ['street','number'])
 # Make pcafire from joined data in 1 using Tableau
-pcafire = pd.read_csv(os.path.join(dataset_path, "joined_fire_data.csv"),
+del fire_new
+fire_new = pd.read_csv(os.path.join(dataset_path, "joined_fire_data.csv"),
                        dtype={'address':'str','incident_type':'str',
                               'PROPERTYADDRESS':'str','PROPERTYHOUSENUM':'str',
                               'CLASSDESC':'str','STREET_NUM':'str','STREET_NAME':'str'}, low_memory=False)
 
+#post14_drop = ['alm_dttm','arv_dttm','XCOORD','YCOORD','alarms','inci_type','CALL_NO']
+#post14_drop = ['latitude','longtidue','alarms','inci_type','CALL_NO']
+post14_drop = ["alarms","call_no"]
+for col in post14_drop: #********
+    del fire_new[col]
+fire_new['type_description'] = fire_new['type_description'].str.strip()
+remove_descript = ['System malfunction, Other',
+                   # 'Smoke detector activation, no fire - unintentional']
+                   # 'Alarm system activation, no fire - unintentional']
+                   'Detector activation, no fire - unintentional', 'Smoke detector activation due to malfunction',
+                   'Dispatched & cancelled en route', 'Dispatched & cancelled on arrival',
+                   'EMS call, excluding vehicle accident with injury', 'Medical assist, assist EMS crew',
+                   'Emergency medical service, other', 'Good intent call, Other', 'Rescue, EMS incident, other',
+                   'Medical Alarm Activation (No Medical Service Req)', 'Motor Vehicle Accident with no injuries',
+                   'No Incident found on arrival at dispatch address', 'Unintentional transmission of alarm, Other',
+                   'Motor vehicle accident with injuries', 'Vehicle accident, general cleanup', 'Power line down',
+                   'Person in distress, Other', 'Cable/Telco Wires Down', 'Service Call, other',
+                   'Vehicle Accident canceled en route', 'Lock-out', 'False alarm or false call, Other',
+                   'Assist police or other governmental agency', 'Special type of incident, Other',
+                   'Alarm system sounded due to malfunction', 'Motor vehicle/pedestrian accident (MV Ped)',
+                   'Assist invalid ', 'Malicious, mischievous false call, Other', 'Accident, potential accident, Other',
+                   'Assist invalid', 'EMS call, party transported by non-fire agency', 'Rescue or EMS standby',
+                   'Public service assistance, Other', 'Police matter', 'Lock-in (if lock out , use 511 )',
+                   'Sprinkler activation, no fire - unintentional', 'Wrong location',
+                   'Local alarm system, malicious false alarm', 'Authorized controlled burning',
+                   'Water problem, Other',
+                   # 'Smoke or odor removal']
+                   'Passenger vehicle fire', 'CO detector activation due to malfunction',
+                   'Authorized controlled burning', 'Steam, vapor, fog or dust thought to be smoke', 'Overheated motor',
+                   'Local alarm system, malicious false alarm', 'Central station, malicious false alarm',
+                   'Public service',
+                   # 'Building or structure weakened or collapsed'
+                   'Heat detector activation due to malfunction', 'Citizen complaint',
+                   'Municipal alarm system, malicious false alarm', 'Sprinkler activation due to malfunction',
+                   'Severe weather or natural disaster, Other', 'Water evacuation', 'Breakdown of light ballast',
+                   'Extrication of victim(s) from vehicle', 'Flood assessment', 'Telephone, malicious false alarm',
+                   'Cover assignment, standby, moveup', 'Road freight or transport vehicle fire']
+for descript in remove_descript:
+    fire_new = fire_new[fire_new.type_description != descript]
+fire_new = fire_new[fire_new['incident_type'].str.strip()  != '540']
+fire_new = fire_new[fire_new['incident_type'].str.strip()  != '5532']
+fire_new = fire_new[fire_new['incident_type'].str.strip()  != '353']
+def casewhen(row):
+    if row['type_description'] == "Brush or brush-and-grass mixture fire": return "142"
+    elif row['type_description'] == "Building fire": return "111"
+    elif row['type_description'] == "Cooking fire, confined to container": return "113"
+    elif row['type_description'] == "Camper or recreational vehicle (RV) fire": return "137"
+    elif row['type_description'] == "Outside rubbish fire, Other": return "150"
+    elif row['type_description'] == "Outside rubbish, trash or waste fire": return "151"
+    elif row['type_description'] == "Outside storage fire": return "131"
+    elif row['type_description'] == "Trash or rubbish fire, contained": return "118"
+    else: return row['incident_type']
+replace = fire_new.apply(casewhen,axis=1)
+fire_new['incident_type']=np.where(fire_new['incident_type'].isnull(),replace,fire_new['incident_type'])
+fire_new['address'] = fire_new['address'].replace(to_replace=', PGH', value='', regex=True)
+fire_new['address'] = fire_new['address'].replace(to_replace=', P', value='', regex=True)
+fire_new['address'] = fire_new['address'].replace(to_replace=',', value='', regex=True)
+fire_new['address'] = fire_new['address'].replace(to_replace='#.*', value='', regex=True)
+fire_new['address'] = fire_new['address'].str.strip()
+fireDate, fireTime = fire_new['alarm_time'].astype(str).str.split(' ', 1).str
+fire_new['alarm_date']= fireDate
+fire_new['alarm_date'] = pd.to_datetime(fire_new['alarm_date'])
+fire_new['fire_year'] = fire_new['alarm_date'].map(lambda x: x.year)
+for col,val in fire_new['incident_type'].value_counts().iteritems():
+    if val <20 and col[0]!= '1':
+        fire_new = fire_new[fire_new['incident_type'] != col]
+fire_new = fire_new.drop_duplicates()
+del fireDate, fireTime, descript, remove_descript, replace
+pcafire=fire_new
+del fire_new    
+del post14_drop    
 # making the fire column with all type 100s as fires
 pcafire['fire'] = pcafire['incident_type'].astype(str).str[0]
 pcafire.loc[pcafire.fire == '1', 'fire'] = 'fire'
@@ -338,8 +410,8 @@ pcafire1 = pcafire1[pd.notnull(pcafire1.INSPECTION_DATE)]
 pcafire2 = pcafire1[(pcafire1.violation_year == pcafire1.fire_year)]
 
 #joining all rows with no pli violations
-fire_nopli = pd.concat([fire_new, pcafire2[['theaddress','alarm_date','incident_type','fire_year']], 
-                        pcafire2[['theaddress','alarm_date','incident_type','fire_year']]]
+fire_nopli = pd.concat([fire_new2, pcafire2[['address','alarm_date','incident_type','fire_year']], 
+                        pcafire2[['address','alarm_date','incident_type','fire_year']]]
     ).drop_duplicates(keep=False)
 #I don't get this step *****
 #pcafire_nopli = pd.merge(pcafinal, fire_nopli, how = 'left', left_on =['PROPERTYADDRESS'],right_on = ['theaddress'])
@@ -377,6 +449,7 @@ combined_df1 = pd.concat([combined_df[['PROPERTYADDRESS','PROPERTYHOUSENUM','ala
 cutoff = datetime.datetime.now() - relativedelta(months=12)
 cutoffdate = cutoff.strftime("%m/%d/%Y")
 
+del plipca1, plidata, pcafire_nopli, pcafire2, pcafire1, pcafire, fire_new2, fire_nopli
 
 testdata = combined_df1[combined_df1.alarm_date > cutoffdate]
 testdata2 = testdata.groupby( [ "PROPERTYHOUSENUM", "PROPERTYADDRESS",'alarm_date','fire_year'] ).sum().reset_index()
@@ -437,7 +510,7 @@ traindata = traindata.append(nofire_train, ignore_index=True)
 traindata = traindata.fillna(0)
 train_data = pd.merge(traindata,pcafinal, on = ["PROPERTYHOUSENUM", "PROPERTYADDRESS"], how = 'left')
 #train_data.fire.value_counts()
-
+del pcafinal
 #creating on hot encoded features for the categorical values
 ohe1 = pd.get_dummies(train_data['CLASSDESC'])
 ohe2 = pd.get_dummies(train_data['SCHOOLDESC'])
@@ -518,7 +591,7 @@ print('f1 score = ', f1)
 with open('{0}ModelPerformance_{1}.txt'.format(log_path, datetime.datetime.now()), 'a') as log_file:
     log_file.write("Confusion Matrix: \n \n")
     for item in cm:
-        print>>log_file, item
+        print(log_file, item)
     log_file.write("Model performance metrics: \n \n")
     log_file.write(acc)
     log_file.write(kapp)
